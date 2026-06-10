@@ -379,32 +379,31 @@ function dibujarNivel2(ctx) {
     ctx.setLineDash([]);
 
     // reliquias
+    // reliquias
     for (const r of n2.reliquias) {
         if (r.recogida) continue;
         const pulso = 0.7 + Math.sin(r.fase * 2) * 0.3;
 
-        if (r.esFinal) {
-            // reliquia final — brilla más
-            ctx.beginPath();
-            ctx.arc(r.mundoX, r.mundoY, r.radio * pulso + 6, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(255,215,0,0.2)';
-            ctx.lineWidth   = 3;
-            ctx.stroke();
+        ctx.save();
+        ctx.translate(r.mundoX, r.mundoY);
+        ctx.scale(pulso, pulso);
 
+        if (r.esFinal) {
+            ctx.scale(1.5, 1.5);
+            dibujarEmoji(ctx, -14.4, -15);
+            
+            // Halo de brillo
             ctx.beginPath();
-            ctx.arc(r.mundoX, r.mundoY, r.radio * pulso, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffd700';
-            ctx.fill();
-        } else {
-            ctx.beginPath();
-            ctx.arc(r.mundoX, r.mundoY, r.radio * pulso, 0, Math.PI * 2);
-            const bi = BIOMAS.indexOf(bioma);
-            ctx.fillStyle   = bi === 0 ? '#aaddff' : bi === 1 ? '#88ffaa' : '#ff88aa';
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth   = 1;
+            ctx.arc(0, 0, 18, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(255,215,0,0.4)';
+            ctx.lineWidth = 3;
             ctx.stroke();
+        } else {
+            // Reliquia normal:
+            dibujarEmoji(ctx, -14.4, -15);
         }
+
+        ctx.restore();
     }
 
     // enemigos
@@ -509,4 +508,50 @@ function dibujarJugador(ctx, j) {
     // tanque de oxígeno
     ctx.fillStyle = '#556688';
     ctx.fillRect(j.mundoX + j.ancho - 6, j.mundoY + 12, 6, 14);
+}
+
+function dibujarEmoji(ctx, x, y) {
+    const px = 1.2; // Escala ajustada a la hitbox del jugador
+
+    const paleta = {
+        1: '#FEE104', 2: '#91481A', 3: '#E59B21', 4: '#673610',
+        5: '#69AF44', 6: '#FDF491', 7: '#0D5C32'
+    };
+
+    const sprite = [
+        [0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,2,2,3,3,3,3,3,2,2,2,2,2,0,0,0,0,0,0],
+        [0,0,0,0,2,2,3,3,1,1,1,1,1,3,3,3,2,1,2,2,0,0,0,0],
+        [0,0,0,2,3,3,1,1,1,1,1,1,1,1,1,3,3,2,1,1,2,0,0,0],
+        [0,0,2,3,1,1,1,1,1,1,1,1,1,1,1,1,6,3,2,1,2,0,0,0],
+        [0,2,3,1,1,1,2,2,2,1,1,1,1,2,2,1,1,6,3,2,3,2,0,0],
+        [0,2,3,1,1,2,1,1,1,1,1,1,1,1,1,2,2,1,6,2,1,1,2,0],
+        [0,2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,3,2,0],
+        [2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,4,1,1,4,1,1,1,4,1,1,4,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,1,1,1,4,1,1,1,1,1,1,4,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,4,1,1,4,1,1,1,4,1,1,4,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,3,2],
+        [2,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,2,3,3,2],
+        [0,2,3,1,2,2,3,1,1,1,1,1,1,1,3,2,2,1,6,3,2,3,2,0],
+        [0,2,3,1,2,0,4,2,2,2,2,2,2,2,4,0,2,1,6,2,3,3,2,0],
+        [0,2,3,1,1,2,0,0,7,7,7,7,7,0,0,2,1,1,3,2,3,2,2,0],
+        [0,0,2,3,1,1,2,7,0,0,5,0,0,7,2,1,1,6,3,2,3,2,0,0],
+        [0,0,0,2,3,6,1,7,5,0,4,0,5,0,1,1,6,3,2,3,2,0,0,0],
+        [0,0,0,0,2,3,3,7,5,4,4,5,5,5,6,3,3,2,3,2,0,0,0,0],
+        [0,0,0,0,0,2,2,7,5,5,4,4,5,5,3,2,2,2,2,0,0,0,0,0],
+        [0,0,0,0,0,0,0,7,5,4,4,0,5,5,2,2,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,5,5,4,5,0,7,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,7,5,5,5,7,0,0,0,0,0,0,0,0,0,0,0]
+    ];
+
+    sprite.forEach((fila, fy) => {
+        fila.forEach((color, fx) => {
+            if (color === 0) return;
+            ctx.fillStyle = paleta[color];
+            // px + 0.5 previene artefactos visuales al usar transformaciones de escala
+            ctx.fillRect(x + fx * px, y + fy * px, px + 0.5, px + 0.5);
+        });
+    });
 }

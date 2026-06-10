@@ -18,7 +18,7 @@ function dibujarTexto(ctx, texto, x, y, opciones = {}) {
     const {
         color    = COLOR.texto,
         tamanio  = 16,
-        fuente   = 'Arial',
+        fuente   = '"Segoe UI", "Helvetica Neue", sans-serif', // Tipografía moderna estilo Subnautica
         negrita  = false,
         centrado = false,
         sombra   = false
@@ -27,14 +27,14 @@ function dibujarTexto(ctx, texto, x, y, opciones = {}) {
     ctx.font = `${negrita ? 'bold ' : ''}${tamanio}px ${fuente}`;
 
     if (sombra) {
-        ctx.shadowColor   = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur    = 6;
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowColor   = 'rgba(0, 0, 0, 0.85)';
+        ctx.shadowBlur    = 8;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 3;
     }
 
-    ctx.fillStyle   = color;
-    ctx.textAlign   = centrado ? 'center' : 'left';
+    ctx.fillStyle    = color;
+    ctx.textAlign    = centrado ? 'center' : 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(texto, x, y);
 
@@ -121,58 +121,54 @@ function dibujarMenu(ctx) {
     const cx = canvas.width  / 2;
     const cy = canvas.height / 2;
 
-    // fondo degradado
+    // fondo degradado oceánico profundo
     const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    grad.addColorStop(0, '#0a1a2e');
-    grad.addColorStop(1, '#0d3b5e');
+    grad.addColorStop(0, '#020813');
+    grad.addColorStop(1, '#08253b');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // título
-    dibujarTexto(ctx, 'El Encanto de la', cx, 80, {
-        centrado: true, tamanio: 22, color: COLOR.acento, sombra: true
+    dibujarTexto(ctx, 'EL ENCANTO DE LA', cx, 75, {
+        centrado: true, tamanio: 18, color: '#44aaff', sombra: true, negrita: true
     });
-    dibujarTexto(ctx, 'Laguna de Ramón', cx, 112, {
-        centrado: true, tamanio: 36, negrita: true, color: COLOR.texto, sombra: true
+    dibujarTexto(ctx, 'LAGUNA DE RAMÓN', cx, 100, {
+        centrado: true, tamanio: 44, negrita: true, color: '#ffffff', sombra: true
     });
 
     // subtítulo
-    dibujarTexto(ctx, 'Región Piura — Perú', cx, 162, {
-        centrado: true, tamanio: 14, color: '#88bbcc'
+    dibujarTexto(ctx, 'REGIÓN PIURA — PERÚ', cx, 155, {
+        centrado: true, tamanio: 12, color: '#00d4ff', negrita: true
     });
 
     // separador
-    ctx.strokeStyle = COLOR.acento;
-    ctx.lineWidth   = 1;
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.3)';
+    ctx.lineWidth   = 2;
     ctx.beginPath();
-    ctx.moveTo(cx - 150, 190);
-    ctx.lineTo(cx + 150, 190);
+    ctx.moveTo(cx - 180, 185);
+    ctx.lineTo(cx + 180, 185);
     ctx.stroke();
 
     // descripción
-    dibujarTexto(ctx, 'Cruza la laguna en balsa y sumérgete', cx, 210, {
-        centrado: true, tamanio: 13, color: '#aaccdd'
+    dibujarTexto(ctx, 'Cruza la laguna en bote y sumérgete', cx, 215, {
+        centrado: true, tamanio: 14, color: '#aaccdd'
     });
-    dibujarTexto(ctx, 'a recuperar las reliquias del fondo.', cx, 230, {
-        centrado: true, tamanio: 13, color: '#aaccdd'
+    dibujarTexto(ctx, 'a recuperar las reliquias del fondo.', cx, 235, {
+        centrado: true, tamanio: 14, color: '#aaccdd'
     });
 
     // botón jugar
     limpiarBotones();
-    const bx = cx - 80, by = cy + 20;
-    dibujarBoton(ctx, bx, by, 160, 45, 'JUGAR');
-    registrarBoton('jugar', bx, by, 160, 45, () => cambiarEstado(ESTADO.NIVEL1));
+    const bx = cx - 85, by = cy + 30;
+    dibujarBoton(ctx, bx, by, 170, 45, 'INICIAR INMERSIÓN');
+    registrarBoton('jugar', bx, by, 170, 45, () => cambiarEstado(ESTADO.NIVEL1));
 
-    // instrucciones
-    dibujarTexto(ctx, 'O presiona  ENTER  para comenzar', cx, by + 65, {
-        centrado: true, tamanio: 12, color: '#667788'
+    // instrucciones corregidas a vertical y "bote"
+    dibujarTexto(ctx, 'Nivel 1: ↑ ↓ (W/S) para mover el bote', cx, by + 75, {
+        centrado: true, tamanio: 13, color: '#778899'
     });
-
-    dibujarTexto(ctx, 'Nivel 1: ← → para mover la balsa', cx, by + 100, {
-        centrado: true, tamanio: 12, color: '#556677'
-    });
-    dibujarTexto(ctx, 'Nivel 2: WASD para bucear  |  E para tienda', cx, by + 118, {
-        centrado: true, tamanio: 12, color: '#556677'
+    dibujarTexto(ctx, 'Nivel 2: WASD para bucear  |  E para tienda', cx, by + 95, {
+        centrado: true, tamanio: 13, color: '#778899'
     });
 }
 
